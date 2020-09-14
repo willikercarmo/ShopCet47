@@ -5,10 +5,11 @@ namespace ShopCet47.Web.Data.Entities
 {
     public class Product
     {
-        public int Id { get; set; }
+        public int Id { get; set; } // o ID tem que ter sempre este nome para reconhecer como Key Primary
 
 
-
+        [Required] // Não permite colocar um produto com o mesmo nome
+        [MaxLength(50, ErrorMessage = "The field {0} only can contain a maximum {1} characters")] // Limite máximo de caractéres
         public string Name { get; set; }
 
 
@@ -24,12 +25,12 @@ namespace ShopCet47.Web.Data.Entities
 
 
         [Display(Name = "Last Purchase")]
-        public DateTime LastPurchase { get; set; }
+        public DateTime? LastPurchase { get; set; } // ? -> aceita null
 
 
 
         [Display(Name = "Last Sale")]
-        public DateTime LastSale { get; set; }
+        public DateTime? LastSale { get; set; }
 
 
 
