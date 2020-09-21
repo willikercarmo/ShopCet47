@@ -28,7 +28,8 @@ namespace ShopCet47.Web
             {
                 var seeder = scope.ServiceProvider.GetService<SeedDb>();
                 seeder.SeedAsync().Wait();
-            }
+            }
+
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>

@@ -144,7 +144,7 @@ namespace ShopCet47.Web.Controllers
         {
             var product = _repository.GetProduct(id);
             _repository.RemoveProduct(product);
-            await _repository.SaveAllAsync();
+            await _repository.SaveAllAsync(); 
             return RedirectToAction(nameof(Index));
         }
 
