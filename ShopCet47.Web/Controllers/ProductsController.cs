@@ -8,16 +8,19 @@ using Microsoft.EntityFrameworkCore;
 using ShopCet47.Web.Data;
 using ShopCet47.Web.Data.Entities;
 using ShopCet47.Web.Data.Repositories;
+using ShopCet47.Web.Helpers;
 
 namespace ShopCet47.Web.Controllers
 {
     public class ProductsController : Controller
     {
         private readonly IProductRepository _productRepository;
+        private readonly IUserHelper _userHelper;
 
-        public ProductsController(IProductRepository productRepository)
+        public ProductsController(IProductRepository productRepository, IUserHelper userHelper)
         {
             _productRepository = productRepository;
+            _userHelper = userHelper;
         }
 
 
@@ -60,6 +63,9 @@ namespace ShopCet47.Web.Controllers
         {
             if (ModelState.IsValid)
             {
+                //TODO: Mudar para o user que depois tiver logado
+                product.User = await _userHelper.GetUserByEmailAsync("williker.do.carmo@formandos.cinel.pt");
+
                 await _productRepository.CreateAsync(product);
                 return RedirectToAction(nameof(Index));
             }
@@ -98,6 +104,7 @@ namespace ShopCet47.Web.Controllers
             {
                 try
                 {
+                    //TODO: Mudar para o user que depois tiver logado
                     await _productRepository.UpdateAsync(product);
 
                 }
