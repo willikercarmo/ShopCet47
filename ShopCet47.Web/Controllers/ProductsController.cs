@@ -68,19 +68,22 @@ namespace ShopCet47.Web.Controllers
 
                 var path = string.Empty;
 
-                if(view.ImageFile != null && view.ImageFile.Length > 0)
+                if (view.ImageFile != null && view.ImageFile.Length > 0)
                 {
+                    var guid = Guid.NewGuid().ToString();
+                    var file = $"{guid}.jpg";
+
                     path = Path.Combine(
                         Directory.GetCurrentDirectory(),
                         "wwwroot\\images\\Products",
-                        view.ImageFile.FileName);
+                        file);
 
                     using (var stream = new FileStream(path, FileMode.Create))
                     {
                         await view.ImageFile.CopyToAsync(stream);
                     }
 
-                    path = $"~/images/Products/{view.ImageFile.FileName}";
+                    path = $"~/images/Products/{file}";
                 }
 
                 var product = this.ToProduct(view, path);
@@ -123,7 +126,7 @@ namespace ShopCet47.Web.Controllers
             {
                 return NotFound();
             }
-            
+
 
             var view = this.ToProductViewModel(product);
 
@@ -166,24 +169,32 @@ namespace ShopCet47.Web.Controllers
 
                     if (view.ImageFile != null && view.ImageFile.Length > 0)
                     {
-                        path = Path.Combine(
-                            Directory.GetCurrentDirectory(),
-                            "wwwroot\\images\\Products",
-                            view.ImageFile.FileName);
+                        path = string.Empty;
 
-                        using (var stream = new FileStream(path, FileMode.Create))
+                        if (view.ImageFile != null && view.ImageFile.Length > 0)
                         {
-                            await view.ImageFile.CopyToAsync(stream);
+                            var guid = Guid.NewGuid().ToString();
+                            var file = $"{guid}.jpg";
+
+                            path = Path.Combine(
+                                Directory.GetCurrentDirectory(),
+                                "wwwroot\\images\\Products",
+                                file);
+
+                            using (var stream = new FileStream(path, FileMode.Create))
+                            {
+                                await view.ImageFile.CopyToAsync(stream);
+                            }
+
+                            path = $"~/images/Products/{file}";
                         }
 
-                        path = $"~/images/Products/{view.ImageFile.FileName}";
+                        var product = this.ToProduct(view, path);
+
+                        //TODO: Mudar para o user que depois tiver logado
+                        await _productRepository.UpdateAsync(product);
+
                     }
-
-                    var product = this.ToProduct(view, path);
-
-                    //TODO: Mudar para o user que depois tiver logado
-                    await _productRepository.UpdateAsync(product);
-
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -226,7 +237,7 @@ namespace ShopCet47.Web.Controllers
         {
             var product = await _productRepository.GetByIdAsync(id);
             await _productRepository.DeleteAsync(product);
-            
+
             return RedirectToAction(nameof(Index));
         }
 
