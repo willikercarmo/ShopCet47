@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,7 @@ using ShopCet47.Web.Models;
 
 namespace ShopCet47.Web.Controllers
 {
+    
     public class ProductsController : Controller
     {
         private readonly IProductRepository _productRepository;
@@ -29,7 +31,7 @@ namespace ShopCet47.Web.Controllers
         // GET: Products
         public IActionResult Index() // Programação assincrono: permite mexer no programa mesmo estando 
         {
-            return View(_productRepository.GetAll());
+            return View(_productRepository.GetAll().OrderBy(p => p.Name));
         }
 
         // GET: Products/Details/5
@@ -50,6 +52,7 @@ namespace ShopCet47.Web.Controllers
             return View(product);
         }
 
+        [Authorize]
         // GET: Products/Create
         public IActionResult Create() // É criado apenas para mostrar o formulário
         {
@@ -113,6 +116,7 @@ namespace ShopCet47.Web.Controllers
             };
         }
 
+        [Authorize]
         // GET: Products/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -212,6 +216,7 @@ namespace ShopCet47.Web.Controllers
             return View(view);
         }
 
+        [Authorize]
         // GET: Products/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
