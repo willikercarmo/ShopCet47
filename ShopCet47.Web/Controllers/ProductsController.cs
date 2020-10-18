@@ -52,7 +52,7 @@ namespace ShopCet47.Web.Controllers
             return View(product);
         }
 
-        [Authorize]
+        [Authorize(Roles ="Admin")]
         // GET: Products/Create
         public IActionResult Create() // É criado apenas para mostrar o formulário
         {
@@ -115,7 +115,7 @@ namespace ShopCet47.Web.Controllers
             };
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         // GET: Products/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -157,12 +157,8 @@ namespace ShopCet47.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Price,ImageFile,LastPurchase,LastSale,IsAvailable,Stock")] ProductViewModel view)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Price,ImageFile,ImageUrl,LastPurchase,LastSale,IsAvailable,Stock")] ProductViewModel view)
         {
-            if (id != view.Id)
-            {
-                return NotFound();
-            }
 
             if (ModelState.IsValid)
             {
@@ -191,17 +187,15 @@ namespace ShopCet47.Web.Controllers
 
                             path = $"~/images/Products/{file}";
                         }
-
-                        var product = this.ToProduct(view, path);
-
-                        product.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
-                        await _productRepository.UpdateAsync(product);
-
                     }
+                    var product = this.ToProduct(view, path);
+
+                    product.User = await this._userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+                    await this._productRepository.UpdateAsync(product);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!await _productRepository.ExistAsync(view.Id))
+                    if (!await this._productRepository.ExistAsync(view.Id))
                     {
                         return NotFound();
                     }
@@ -215,7 +209,7 @@ namespace ShopCet47.Web.Controllers
             return View(view);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         // GET: Products/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
