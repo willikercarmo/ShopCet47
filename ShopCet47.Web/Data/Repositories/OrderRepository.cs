@@ -17,15 +17,29 @@ namespace ShopCet47.Web.Data.Repositories
             _userHelper = userHelper;
         }
 
-        public async Task<IQueryable<Order>> GetOrderAsync(string username)
+        public async Task<IQueryable<OrderDetailTemp>> GetDetailTempsAsync(string username)
         {
             var user = await _userHelper.GetUserByEmailAsync(username);
-            if(user == null)
+            if (user == null)
             {
                 return null;
             }
 
-            if(await _userHelper.IsUserInRoleAsync(user, "Admin"))
+            return _context.OrderDetailTemps
+               .Include(o => o.Product) // traz os produtos
+               .Where(o => o.User == user) // seleciona o user que está logado
+               .OrderBy(o => o.Product.Name); // ordena por nome
+        }
+
+        public async Task<IQueryable<Order>> GetOrderAsync(string username)
+        {
+            var user = await _userHelper.GetUserByEmailAsync(username);
+            if (user == null)
+            {
+                return null;
+            }
+
+            if (await _userHelper.IsUserInRoleAsync(user, "Admin"))
             {
                 // se o user for o admin
                 return _context.Orders

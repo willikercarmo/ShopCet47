@@ -8,5 +8,7 @@ namespace ShopCet47.Web.Data.Repositories
     {
         Task<IQueryable<Order>> GetOrderAsync(string username);
 
+        Task<IQueryable<OrderDetailTemp>> GetDetailTempsAsync(string username);
+
     }
 }
