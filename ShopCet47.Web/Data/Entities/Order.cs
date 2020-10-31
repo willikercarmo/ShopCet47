@@ -24,6 +24,8 @@ namespace ShopCet47.Web.Data.Entities
 
         public IEnumerable<OrderDetail> Items { get; set; } // IEnumerable: Faz a lista da Classe OrderDetail
 
+        public int Lines { get { return this.Items == null ? 0 : this.Items.Count(); } }
+
         [DisplayFormat(DataFormatString = "{0:N2}")]
         public double Quantity { get { return this.Items == null ? 0 : this.Items.Sum(i => i.Quantity); } }
 
